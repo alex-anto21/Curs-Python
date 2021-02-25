@@ -1,5 +1,5 @@
 from django.urls import path
-# from car_sales.views import home, about
+ # from car_sales.views import home, about
 from . import views
 
 urlpatterns = [

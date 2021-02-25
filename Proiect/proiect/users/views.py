@@ -1,21 +1,28 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .forms import UserRegisterForm
 
 
 # Create your views here.
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
-            return redirect('car_sales-home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
+# class UserRegisterView(generic.CreateView):
+#     form_class = UserCreationForm
+#     template_name = 'users/register.html'
+#     success_url = reverse_lazy('login')
 
-# message.debug
-# message.info
-# message.success
-# message.warning
+
+def register(request):
+         if request.method == 'POST':
+            form = UserRegisterForm(request.POST)
+            if form.is_valid():
+                 form.save()
+                 username = form.cleaned_data.get('username')
+                 messages.success(request, f'Your account has been created! You are now able to log in')
+                 return redirect('login')
+         else:
+             form = UserRegisterForm()
+         return render(request, 'users/register.html', {'form': form})
+
+@login_required
+def profile(request):
+    return render(request,'users/profile.html')
